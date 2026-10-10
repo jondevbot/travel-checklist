@@ -123,6 +123,7 @@ textarea { resize: vertical; }
   padding: 16px; text-align: center; margin: 12px 0;
 }
 .starter-wrap p { margin: 0 0 10px; font-weight: 600; }
+#items-list { padding-bottom: 110px; }
 .cat-group { margin-top: 18px; }
 .cat-title {
   font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
@@ -160,6 +161,10 @@ textarea { resize: vertical; }
 .modal-card h2 { margin: 0 0 14px; font-size: 21px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+.confirm-message { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+#confirm-input-wrap { margin-bottom: 14px; }
+#confirm-input-wrap input { margin-top: 0; }
+.btn.danger-btn { background: var(--danger); }
 
 /* ---------- toast ---------- */
 .toast {
