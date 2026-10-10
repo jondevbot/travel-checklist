@@ -54,6 +54,46 @@ function showError(el, err) {
   el.hidden = false;
 }
 
+/* ---------------- in-app confirm / prompt ----------------
+   Promise-based modal replacing native confirm()/prompt(), which block
+   badly in some embedded browsers and look out of place on mobile.
+   Resolves true/false for confirms, or the entered string / null for prompts. */
+function uiDialog(opts) {
+  return new Promise(resolve => {
+    const modal = $('confirm-modal');
+    $('confirm-title').textContent = opts.title || 'Are you sure?';
+    $('confirm-message').textContent = opts.message || '';
+    $('confirm-message').hidden = !opts.message;
+    const okBtn = $('confirm-ok');
+    okBtn.textContent = opts.okText || 'OK';
+    okBtn.classList.toggle('danger-btn', !!opts.danger);
+    const wrap = $('confirm-input-wrap');
+    const input = $('confirm-input');
+    if (opts.input) {
+      wrap.hidden = false;
+      input.value = opts.inputValue || '';
+      input.placeholder = opts.inputPlaceholder || '';
+    } else {
+      wrap.hidden = true;
+    }
+    const done = val => {
+      modal.hidden = true;
+      okBtn.onclick = cancelBtn.onclick = null;
+      modal.onclick = null;
+      input.onkeydown = null;
+      resolve(val);
+    };
+    const cancelBtn = $('confirm-cancel');
+    okBtn.onclick = () => done(opts.input ? input.value : true);
+    cancelBtn.onclick = () => done(opts.input ? null : false);
+    modal.onclick = e => { if (e.target === modal) done(opts.input ? null : false); };
+    input.onkeydown = e => { if (e.key === 'Enter') done(input.value); };
+    modal.hidden = false;
+    if (opts.input) setTimeout(() => { input.focus(); input.select(); }, 50);
+    else setTimeout(() => okBtn.focus(), 50);
+  });
+}
+
 /* ---------------- session ---------------- */
 function saveSession(s) {
   session = s;
@@ -275,7 +315,12 @@ function wireTripDetail() {
   $('back-btn').onclick = () => { currentTrip = null; showTrips(); };
   $('edit-trip-btn').onclick = () => openTripModal(currentTrip);
   $('delete-trip-btn').onclick = async () => {
-    if (!confirm(`Delete "${currentTrip.name}" and its whole packing list?`)) return;
+    const ok = await uiDialog({
+      title: 'Delete trip?',
+      message: `Delete "${currentTrip.name}" and its whole packing list? This can't be undone.`,
+      okText: 'Delete', danger: true,
+    });
+    if (!ok) return;
     try {
       await api('travel_trip_delete', authed({ p_trip_id: currentTrip.id }));
       toast('Trip deleted.');
@@ -370,7 +415,11 @@ function itemEl(item) {
     } catch (e) { toast(e.message || 'Could not update item.'); }
   };
   el.querySelector('.item-label').onclick = async () => {
-    const next = prompt('Edit item', item.label);
+    const next = await uiDialog({
+      title: 'Edit item',
+      okText: 'Save', danger: false,
+      input: true, inputValue: item.label, inputPlaceholder: 'Item name',
+    });
     if (next === null) return;
     const label = next.trim();
     if (!label || label === item.label) return;
@@ -381,7 +430,12 @@ function itemEl(item) {
     } catch (e) { toast(e.message || 'Could not update item.'); }
   };
   el.querySelector('.item-del').onclick = async () => {
-    if (!confirm(`Remove "${item.label}"?`)) return;
+    const ok = await uiDialog({
+      title: 'Remove item?',
+      message: `Remove "${item.label}" from the packing list?`,
+      okText: 'Remove', danger: true,
+    });
+    if (!ok) return;
     try {
       await api('travel_item_delete', authed({ p_item_id: item.id }));
       items = items.filter(i => i.id !== item.id);
