@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Travel Checklist</title>
+<link rel="stylesheet" href="styles.css?v=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ AUTH VIEW ============ -->
+  <section id="auth-view" class="view">
+    <div class="auth-wrap">
+      <div class="brand">
+        <div class="brand-plane">✈️</div>
+        <h1>Travel Checklist</h1>
+        <p>Pack smart. Never forget a thing.</p>
+      </div>
+      <div class="card auth-card">
+        <div class="tabs">
+          <button id="tab-signin" class="tab active" type="button">Sign in</button>
+          <button id="tab-register" class="tab" type="button">Create account</button>
+        </div>
+        <form id="auth-form" autocomplete="on">
+          <label>Username
+            <input id="auth-username" type="text" autocomplete="username" maxlength="40" required>
+          </label>
+          <label>Password
+            <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required>
+          </label>
+          <div id="register-extra" hidden>
+            <label>Email <span class="opt">(optional)</span>
+              <input id="auth-email" type="email" autocomplete="email">
+            </label>
+            <label>Nickname <span class="opt">(optional)</span>
+              <input id="auth-nickname" type="text" autocomplete="nickname" maxlength="40">
+            </label>
+          </div>
+          <div id="auth-error" class="form-error" hidden></div>
+          <button id="auth-submit" class="btn primary big" type="submit">Sign in</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRIPS VIEW ============ -->
+  <section id="trips-view" class="view" hidden>
+    <header class="topbar">
+      <div class="topbar-title"><span class="plane">✈️</span> My Trips</div>
+      <div class="topbar-right">
+        <span id="user-label" class="user-label"></span>
+        <button id="signout-btn" class="btn ghost small" type="button">Sign out</button>
+      </div>
+    </header>
+    <main class="page">
+      <button id="new-trip-btn" class="btn primary big" type="button">+ New trip</button>
+      <div id="trips-list" class="trips-list"></div>
+      <div id="trips-empty" class="empty" hidden>
+        <div class="empty-emoji">🧳</div>
+        <p>No trips yet.<br>Plan your first one!</p>
+      </div>
+    </main>
+  </section>
+
+  <!-- ============ TRIP DETAIL VIEW ============ -->
+  <section id="trip-view" class="view" hidden>
+    <header class="topbar">
+      <button id="back-btn" class="btn ghost small" type="button">← Trips</button>
+      <div class="topbar-right">
+        <button id="edit-trip-btn" class="btn ghost small" type="button">Edit</button>
+        <button id="delete-trip-btn" class="btn ghost small danger" type="button">Delete</button>
+      </div>
+    </header>
+    <main class="page">
+      <div id="trip-header" class="trip-header"></div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div id="progress-text" class="progress-text"></div>
+      </div>
+      <div id="starter-wrap" class="starter-wrap" hidden>
+        <p>Start with a ready-made packing list?</p>
+        <button id="starter-btn" class="btn secondary" type="button">Add starter packing list</button>
+      </div>
+      <div id="items-list"></div>
+      <form id="add-item-form" class="add-item card">
+        <input id="new-item-label" type="text" placeholder="Add something to pack…" maxlength="120" autocomplete="off">
+        <select id="new-item-category"></select>
+        <button class="btn primary" type="submit">Add</button>
+      </form>
+    </main>
+  </section>
+
+  <!-- ============ TRIP MODAL ============ -->
+  <div id="trip-modal" class="modal" hidden>
+    <div class="modal-card">
+      <h2 id="trip-modal-title">New trip</h2>
+      <form id="trip-form">
+        <label>Trip name
+          <input id="trip-name" type="text" maxlength="80" required placeholder="e.g. Cabo weekend">
+        </label>
+        <label>Destination <span class="opt">(optional)</span>
+          <input id="trip-destination" type="text" maxlength="80" placeholder="e.g. Cabo San Lucas, MX">
+        </label>
+        <div class="row2">
+          <label>Start date <span class="opt">(optional)</span>
+            <input id="trip-start" type="date">
+          </label>
+          <label>End date <span class="opt">(optional)</span>
+            <input id="trip-end" type="date">
+          </label>
+        </div>
+        <label>Notes <span class="opt">(optional)</span>
+          <textarea id="trip-notes" rows="3" maxlength="2000" placeholder="Flight times, hotel, who's going…"></textarea>
+        </label>
+        <div id="trip-form-error" class="form-error" hidden></div>
+        <div class="modal-actions">
+          <button type="button" id="trip-cancel" class="btn ghost">Cancel</button>
+          <button type="submit" class="btn primary">Save trip</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+</div>
+<script src="app.js?v=1"></script>
+</body>
+</html>
